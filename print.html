@@ -1,0 +1,983 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Jormungandr</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="quickstart/introduction.html"><strong aria-hidden="true">1.</strong> Quickstart</a></li><li><ol class="section"><li><a href="quickstart/01_command_line.html"><strong aria-hidden="true">1.1.</strong> Command lines tools</a></li><li><a href="quickstart/02_passive_node.html"><strong aria-hidden="true">1.2.</strong> Starting a passive node</a></li><li><a href="quickstart/03_rest_api.html"><strong aria-hidden="true">1.3.</strong> REST API</a></li></ol></li><li><a href="stake_pool/introduction.html"><strong aria-hidden="true">2.</strong> staking and stake pool</a></li><li><ol class="section"><li><a href="stake_pool/registering_stake.html"><strong aria-hidden="true">2.1.</strong> registering your stake</a></li><li><a href="stake_pool/delegating_stake.html"><strong aria-hidden="true">2.2.</strong> delegating your stake</a></li><li><a href="stake_pool/registering_stake_pool.html"><strong aria-hidden="true">2.3.</strong> registering stake pool</a></li></ol></li><li><a href="jcli/introduction.html"><strong aria-hidden="true">3.</strong> jcli</a></li><li><ol class="section"><li><a href="jcli/key.html"><strong aria-hidden="true">3.1.</strong> Cryptographic keys</a></li><li><a href="jcli/address.html"><strong aria-hidden="true">3.2.</strong> Address</a></li><li><a href="jcli/transaction.html"><strong aria-hidden="true">3.3.</strong> Transaction</a></li><li><a href="jcli/certificate.html"><strong aria-hidden="true">3.4.</strong> Certificate</a></li><li><a href="jcli/rest.html"><strong aria-hidden="true">3.5.</strong> REST</a></li></ol></li><li><a href="advanced/introduction.html"><strong aria-hidden="true">4.</strong> Advanced</a></li><li><ol class="section"><li><a href="advanced/01_the_genesis_block.html"><strong aria-hidden="true">4.1.</strong> Genesis block</a></li><li><a href="advanced/02_starting_bft_blockchain.html"><strong aria-hidden="true">4.2.</strong> Starting a bft blockchain</a></li><li><a href="advanced/03_starting_genesis_praos_blockchain.html"><strong aria-hidden="true">4.3.</strong> Starting a genesis blockchain</a></li></ol></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Jormungandr</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#jormungandr-the-rust-node" id="jormungandr-the-rust-node"><h1>Jormungandr, the rust node</h1></a>
+<p>Jörmungandr refers to <em>Midgard Serpent</em> in the Norse mythology. It is a hint to
+<em>Ouroboros</em>, the Ancient Egypt serpent, which is eating its own tail and the
+<a href="https://eprint.iacr.org/2016/889.pdf">IOHK paper</a> on proof of stake.</p>
+<p>But in less specific mythical terms, here, <strong>Jormungandr</strong> will refer to the Node,
+the software implementing ouroboros protocols (the blockchain protocols running
+cardano).</p>
+<a class="header" href="#quickstart" id="quickstart"><h1>Quickstart</h1></a>
+<p>The rust node comes with tools and help in order to quickly start
+a node and connect to the blockchain.</p>
+<p>It is compatible to most platforms and it is pre-packaged for some
+of them.</p>
+<p>Here we will see how to install <code>jormungandr</code> and its helper <code>jcli</code>
+and how to connect quickly to a given blockchain.</p>
+<p>The software is bundled with 2 different command line software:</p>
+<ol>
+<li><strong>jormungandr</strong>: the node;</li>
+<li><strong>jcli</strong>: Jormungandr Command Line Interface, the helpers and primitives to run and interact with the node.</li>
+</ol>
+<a class="header" href="#installation" id="installation"><h1>Installation</h1></a>
+<a class="header" href="#from-a-release" id="from-a-release"><h2>From a release</h2></a>
+<p>This is the recommended method. Releases are all available
+<a href="https://github.com/input-output-hk/jormungandr/releases">here</a>.</p>
+<a class="header" href="#from-source" id="from-source"><h2>From source</h2></a>
+<p>Jormungandr's code source is available on
+<a href="https://github.com/input-output-hk/jormungandr#how-to-install-from-sources">github</a>.
+Follow the instructions to build the software from sources.</p>
+<a class="header" href="#help-and-auto-completion" id="help-and-auto-completion"><h1>Help and auto completion</h1></a>
+<p>All commands come with usage help with the option <code>--help</code> or <code>-h</code>.</p>
+<p>For <code>jcli</code>, it is possible to generate the auto completion with:</p>
+<pre><code>jcli auto-completion bash ${HOME}/.bash_completion.d
+</code></pre>
+<p>Supported shells are: bash, fish, zsh, powershell and elvish.</p>
+<p><strong>Note:</strong>
+Make sure <code>${HOME}/.bash_completion.d</code> directory previously exists on your HD.
+In order to use auto completion you still need to:</p>
+<pre><code>source ${HOME}/.bash_completion.d/jcli.bash
+</code></pre>
+<p>You can also put it in your <code>${HOME}/.bashrc</code>.</p>
+<p>The passive Node is the most common type of Node on the network. It
+is a Node without cryptographic materials or any mean to create blocks.
+This type of nodes are mostly used for wallets, explorers or relays.</p>
+<p>In order to start the node, you first need to gather the blockchain
+information you need to connect to.</p>
+<ol>
+<li>the hash of the <strong>genesis block</strong> of the blockchain, this will be the source
+of truth of the blockchain. It is 64 hexadecimal characters.</li>
+<li>the <strong>trusted peers</strong> identifiers and access points.</li>
+</ol>
+<p>These information are essentials to start your node in a secure way.</p>
+<p>The <strong>genesis block</strong> is the first block of the blockchain. It contains the
+static parameters of the blockchain as well as the initial funds. Your node
+will utilise the <strong>Hash</strong> to retrieve it from the other peers. It will also
+allows the Node to verify the integrity of the downloaded <strong>genesis block</strong>.</p>
+<p>The <strong>trusted peers</strong> are the nodes in the public network that your Node will
+trust in order to initialise the Peer To Peer network. More details in
+<strong>TODO: add chapter about Jormungandr P2P</strong>.</p>
+<a class="header" href="#the-node-configuration" id="the-node-configuration"><h1>The node configuration</h1></a>
+<p>Your node configuration file may look like the following:</p>
+<pre><code class="language-yaml">storage: &quot;/mnt/cardano/storage&quot;
+
+rest:
+  listen: &quot;127.0.0.1:8443&quot;
+  prefix: &quot;api&quot;
+
+peer_2_peer:
+  trusted_peers:
+    - id: 1
+      address: &quot;/ip4/104.24.28.11/tcp/8299&quot;
+  public_address: &quot;/ip4/u.v.x.y/tcp/8299&quot;
+  topics_of_interests:
+    messages: low
+    blocks: normal
+</code></pre>
+<p>Fields description:</p>
+<ul>
+<li><em>storage</em>: (optional) path to the storage. If omitted, the
+blockchain is stored in memory only.</li>
+<li><em>logger</em>: (optional) logger configuration,
+<ul>
+<li><em>verbosity</em>: 0 - warning, 1 - info, 2 -debug, 3 and above - trace</li>
+<li><em>format</em>: log output format - plain or json.</li>
+<li><em>output</em>: log output - stderr, syslog (unix only) or journald (linux with systemd only, must be enabled during compilation)</li>
+</ul>
+</li>
+<li><em>rest</em>: (optional) configuration of the rest endpoint.
+<ul>
+<li><em>listen</em>: listen address</li>
+<li><em>pkcs12</em>: certificate file (optional)</li>
+<li><em>prefix</em>: (optional) api prefix</li>
+</ul>
+</li>
+<li><em>peer_2_peer</em>: the P2P network settings
+<ul>
+<li><em>trusted_peers</em>: (optional) the list of nodes to connect to in order to
+bootstrap the p2p topology (and bootstrap our local blockchain);</li>
+<li><em>public_id</em>: (optional) the public identifier send to the other nodes in the
+p2p network. If not set it will be randomly generated.</li>
+<li><em>public_address</em>: the address to listen from and accept connection
+from. This is the public address that will be distributed to other peers
+of the network that may find interest into participating to the blockchain
+dissemination with the node;</li>
+<li><em>topics_of_interests</em>: the different topics we are interested to hear about:
+<ul>
+<li><em>messages</em>: notify other peers this node is interested about Transactions
+typical setting for a non mining node: <code>&quot;low&quot;</code>. For a stakepool: <code>&quot;high&quot;</code>;</li>
+<li><em>blocks</em>: notify other peers this node is interested about new Blocs.
+typical settings for a non mining node: <code>&quot;normal&quot;</code>. For a stakepool: <code>&quot;high&quot;</code>;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a class="header" href="#starting-the-node" id="starting-the-node"><h1>Starting the node</h1></a>
+<pre><code>jormungandr --config config.yaml --genesis-block-hash 'abcdef987654321....'
+</code></pre>
+<p>It is possible to query the node via its REST Interface.</p>
+<p>In the node configuration, you have set something like:</p>
+<pre><code class="language-yaml"># ...
+
+rest:
+  listen: &quot;127.0.0.1:8443&quot;
+  prefix: &quot;api&quot;
+
+#...
+</code></pre>
+<p>This is the REST endpoint to talk to the node, to query blocks or send transaction.</p>
+<p>It is possible to query the node stats with the following end point:</p>
+<pre><code>curl http://127.0.0.1:8443/api/v0/node/stats
+</code></pre>
+<p>The result may be:</p>
+<pre><code class="language-json">{&quot;blockRecvCnt&quot;:120,&quot;txRecvCnt&quot;:92,&quot;uptime&quot;:245}
+</code></pre>
+<blockquote>
+<p>THE REST API IS STILL UNDER DEVELOPMENT</p>
+</blockquote>
+<p>Please note that the end points and the results may change in the future.</p>
+<a class="header" href="#staking-with-jormungandr" id="staking-with-jormungandr"><h1>Staking with jormungandr</h1></a>
+<p>Here we will describe how to:</p>
+<ul>
+<li><em>register you stake key</em>, this key will be necessary to <em>group</em> your addresses
+and start collecting stake;</li>
+<li><em>delegate your stake to a stake pool</em> so that you can participate to the consensus
+and maybe collect rewards for that;</li>
+</ul>
+<p>If you are a <em>normal</em> user of the blockchain then you will certainly not need to look
+at the last section about <em>how to register a stake pool</em>.</p>
+<a class="header" href="#registering-your-stake" id="registering-your-stake"><h1>registering your stake</h1></a>
+<p>This is the primary operation to do on the blockchain: declare
+your stake key. This is the key that will allow you to <strong>group</strong>
+your funds and claim stake.</p>
+<p>You will need this in order to participate to the proof of stake
+protocol (via delegating or owning a stake pool).</p>
+<a class="header" href="#you-stake-key-pair" id="you-stake-key-pair"><h2>You stake key pair</h2></a>
+<p>This is the key pair that will identify you as a stake owner in the
+blockchain. It is preferable to use a key pair that is different from
+your wallet (for security reason). See the <a href="stake_pool/../jcli/key.html"><code>jcli key</code></a> documentation
+to generate a new key pair of type <code>Ed25519Extended</code>. For example:</p>
+<pre><code>$ jcli key generate --type=Ed25519Extended &gt; stake_key.prv
+</code></pre>
+<p>The file <code>stake_key.prv</code> will contain your private key.</p>
+<pre><code>$ cat stake_key.prv | jcli key to-public &gt; stake_key.pub
+</code></pre>
+<p>The file <code>stake_key.pub</code> will contain your public key.</p>
+<a class="header" href="#creating-your-stake-key-registration-certificate" id="creating-your-stake-key-registration-certificate"><h2>Creating your Stake Key registration certificate</h2></a>
+<p>To create your stake key certificate:</p>
+<pre><code>$ jcli certificate new stake-key-registration  $(cat stake_key.pub) stake_key.cert
+</code></pre>
+<p>The <code>stake_key.cert</code> now contains your stake_key certificate. You just need to
+sign it with your private key:</p>
+<pre><code>$ cat stake_key.cert| jcli certificate sign stake_key.prv | tee stake_key.cert
+cert1q8rv4ccl54k99rtnm39...ysq
+</code></pre>
+<p>The output can now be added in the <code>transaction</code> and submitted to a node.</p>
+<a class="header" href="#delegating-your-stake" id="delegating-your-stake"><h1>delegating your stake</h1></a>
+<p>Now that you have created and submitted your <a href="stake_pool/./registering_stake.html"><code>stake key</code></a> you can chose
+to delegate your staking power to a stake pool.</p>
+<a class="header" href="#how-to-create-the-delegation-certificate" id="how-to-create-the-delegation-certificate"><h2>how to create the delegation certificate</h2></a>
+<p>You will need your:</p>
+<ul>
+<li><code>stake_key.pub</code> file as created in <a href="stake_pool/./registering_stake.html"><code>stake key</code></a>;</li>
+<li>the Stake Pool ID: 32bytes identifying the stake pool you want
+to delegate your stake to.</li>
+</ul>
+<pre><code>$ jcli certificate new stake-delegation \
+    ea830e5d9647af89a5e9a4d4089e6e855891a533316adf4a42b7bf1372389b74 \
+    $(cat stake_key.pub) &gt; stake_delegation.cert
+</code></pre>
+<a class="header" href="#how-to-sign-your-delegation-certificate" id="how-to-sign-your-delegation-certificate"><h2>how to sign your delegation certificate</h2></a>
+<p>Just like for the <a href="stake_pool/./registering_stake.html"><code>stake key</code></a> certificate:</p>
+<pre><code>$ cat stake_delegation.cert| jcli certificate sign stake_key.prv | tee stake_delegation.cert
+cert1q8rv4ccl54k99rtnm39...zr0
+</code></pre>
+<p>The output can now be added in the <code>transaction</code> and submitted to a node.</p>
+<a class="header" href="#registering-stake-pool" id="registering-stake-pool"><h1>registering stake pool</h1></a>
+<p>There are multiple components to be aware of when running a stake pool:</p>
+<ul>
+<li>your <code>NodeId</code>: it is the identifier within the blockchain protocol (wallet
+will delegate to your stake pool via this <code>NodeId</code>);</li>
+<li>your <a href="https://en.wikipedia.org/wiki/Verifiable_random_function"><strong>VRF</strong></a> key pairs: this is the cryptographic material we will use to participate
+to the leader election;</li>
+<li>your [<strong>KES</strong>] key pairs: this is the cryptographic material we will use to sign the
+block with.</li>
+</ul>
+<p>So in order to start your stake pool you will need to generate these objects.</p>
+<a class="header" href="#the-primitives" id="the-primitives"><h1>The primitives</h1></a>
+<a class="header" href="#vrf-key-pair" id="vrf-key-pair"><h2>VRF key pair</h2></a>
+<p>To generate your <a href="https://en.wikipedia.org/wiki/Verifiable_random_function"><strong>VRF</strong></a> Key pairs, we will utilise [<code>jcli</code>] as described
+<a href="stake_pool/../jcli/key.html">here</a>:</p>
+<pre><code>$ jcli key generate --type=Curve25519_2HashDH &gt; stake_pool_vrf.prv
+</code></pre>
+<p><code>stake_pool_vrf.prv</code> file now contains the VRF private key.</p>
+<pre><code>$ cat stake_pool_vrf.prv | jcli key to-public &gt; stake_pool_vrf.pub
+</code></pre>
+<a class="header" href="#kes-key-pair" id="kes-key-pair"><h2>KES key pair</h2></a>
+<p>Similar to above:</p>
+<pre><code>$ jcli key generate --type=SumEd25519_12 &gt; stake_pool_kes.prv
+</code></pre>
+<p><code>stake_pool_kes.prv</code> now contains your KES private key</p>
+<pre><code>$ cat stake_pool_kes.prv | jcli key to-public &gt; stake_pool_kes.pub
+</code></pre>
+<a class="header" href="#creating-your-stake-pool-certificate" id="creating-your-stake-pool-certificate"><h1>creating your stake pool certificate</h1></a>
+<p>The certificate is what will be sent to the blockchain in order to register
+yourself to the other participants of the blockchain that you are a stake
+pool too.</p>
+<pre><code>$ jcli certificate new stake-pool-registration \
+    --kes-key $(cat stake_pool_kes.pub) \
+    --vrf-key $(cat stake_pool_vrf.pub) \
+    --serial 1010101010 &gt; stake_pool.cert
+</code></pre>
+<p>Now you need to sign this certificate with the owner key:</p>
+<pre><code>$ cat stake_pool.cert | jcli certificate sign stake_key.prv | tee stake_pool.cert
+cert1qsqqqqqqqqqqqqqqqqqqq0p5avfqp9tzusr26...cegxaz
+</code></pre>
+<p>And now you can retrieve your stake pool id (<code>NodeId</code>):</p>
+<pre><code>$ cat stake_pool.cert | jcli certificate get-stake-pool-id | tee stake_pool.id
+ea830e5d9647af89a5e9a4d4089e6e855891a533316adf4a42b7bf1372389b74
+</code></pre>
+<a class="header" href="#jcli" id="jcli"><h1>jcli</h1></a>
+<p>This is the rust node command line helpers. It is mostly meant
+for developers and stake pool operators. It allows offline operations:</p>
+<ul>
+<li>generating cryptographic materials for the wallets and stake pools;</li>
+<li>creating addresses, transactions and certificates;</li>
+<li>prepare a new blockchain</li>
+</ul>
+<p>and it allows simple interactions with the node:</p>
+<ul>
+<li>query stats;</li>
+<li>send transactions and certificates;</li>
+<li>get raw blocks and UTxOs.</li>
+</ul>
+<a class="header" href="#cryptographic-keys" id="cryptographic-keys"><h1>cryptographic keys</h1></a>
+<p>There are multiple type of key for multiple reasons.</p>
+<table><thead><tr><th align="center"> type </th><th align="left"> usage </th></tr></thead><tbody>
+<tr><td align="center"><code>Ed25519</code> </td><td align="left"> Signing algorithm for Ed25519 algorithm </td></tr>
+<tr><td align="center"><code>Ed25519Bip32</code></td><td align="left"> For HDWallet, this type of keys allow deterministic derivation </td></tr>
+<tr><td align="center"><code>Ed25519Extended</code></td><td align="left"> Compatible with <code>Ed25519Bip32</code> but without the derivation </td></tr>
+<tr><td align="center"><code>SumEd25519_12</code></td><td align="left"> For stake pool, necessary for the KES </td></tr>
+<tr><td align="center"><code>Curve25519_2HashDH</code></td><td align="left"> For stake pool, necessary for the VRF </td></tr>
+</tbody></table>
+<p>There is a command line parameter to generate this keys:</p>
+<pre><code>$ jcli key generate --type=Ed25519
+ed25519_sk1cvac48ddf2rpk9na94nv2zqhj74j0j8a99q33gsqdvalkrz6ar9srnhvmt
+</code></pre>
+<p>and to extract the associated public key:</p>
+<pre><code>$ echo ed25519_sk1cvac48ddf2rpk9na94nv2zqhj74j0j8a99q33gsqdvalkrz6ar9srnhvmt | jcli key to-public
+ed25519_pk1z2ffur59cq7t806nc9y2g64wa60pg5m6e9cmrhxz9phppaxk5d4sn8nsqg
+</code></pre>
+<a class="header" href="#address" id="address"><h1>address</h1></a>
+<p>Jormungandr comes with a separate CLI to create and manipulate addresses.</p>
+<p>This is useful for creating addresses from public keys in the CLI,
+for debugging addresses and for testing.</p>
+<a class="header" href="#display-address-info" id="display-address-info"><h2>display address info</h2></a>
+<p>To display an address and verify it is in a valid format you can utilise:</p>
+<pre><code>$ jcli address info ta1svy0mwwm7mdwcuj308aapjw6ra4c3e6cygd0f333nvtjzxg8ahdvxlswdf0
+discrimination: testing
+public key: ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+</code></pre>
+<p>or for example:</p>
+<pre><code>$ jcli address \
+    info \
+    ca1qsy0mwwm7mdwcuj308aapjw6ra4c3e6cygd0f333nvtjzxg8ahdvxz8ah8dldkhvwfghn77se8dp76uguavzyxh5cccek9epryr7mkkr8n7kgx
+discrimination: production
+public key: ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+group key:  ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+</code></pre>
+<a class="header" href="#creating-an-address" id="creating-an-address"><h2>Creating an address</h2></a>
+<p>every of the command below allows to create address for production or for testing.
+This is for discrimination of addresses and to prevent users to send funds when utilising
+a testnet environment. To create an address for testing simply add the flag <code>--testing</code>.</p>
+<a class="header" href="#address-for-utxo" id="address-for-utxo"><h3>Address for UTxO</h3></a>
+<p>You can create a bootstrap era address utilising the following command.</p>
+<pre><code>$ jcli address \
+    single ed25519e_pk1jnlhwdgzv3c9frknyv7twsv82su26qm30yfpdmvkzyjsdgw80mfqduaean
+ca1qw207ae4qfj8q4yw6v3ned6psa2r3tgrw9u3y9hdjcgj2p4pcaldyukyka8
+</code></pre>
+<p>This kind of address are useful when running in the BFT era or if delegation is not
+desired.</p>
+<p>To add the delegation, simply add the delegation key as a second parameter of the command:</p>
+<pre><code>$ jcli address \
+    single \
+    ed25519e_pk1fxvudq6j7mfxvgk986t5f3f258sdtw89v4n3kr0fm6mpe4apxl4q0vhp3k \
+    ed25519e_pk1as03wxmy2426ceh8nurplvjmauwpwlcz7ycwj7xtl9gmx9u5gkqscc5ylx
+ca1q3yen35r2tmdye3zc5lfw3x992s7p4dcu4jkwxcda80tv8xh5ym74mqlzudkg42443nw08cxr7e9hmcuzals9ufsa9uvh723kvteg3vpvrcxcq
+</code></pre>
+<a class="header" href="#address-for-account" id="address-for-account"><h3>Address for Account</h3></a>
+<p>Account are much simpler to utilise, they are needed to create reward account
+but it is also possible to utilise them as a wallet.</p>
+<p>To create an account:</p>
+<pre><code>$ jcli address \
+    account ed25519e_pk1c4yq3hflulynn8fef0hdq92579n3c49qxljasrl9dnuvcksk84gs9sqvc2
+ca1qhz5szxa8lnujwva8997a5q42nckw8z55qm7tkq0u4k03nz6zc74ze780qe
+</code></pre>
+<a class="header" href="#transaction" id="transaction"><h1>transaction</h1></a>
+<p>Tooling for offline transaction creation and signing.</p>
+<pre><code>jcli transaction
+</code></pre>
+<p>Those familiar with <a href="http://github.com/input-output-hk/cardano-cli"><code>cardano-cli</code></a>
+transaction builder will see resemblance in <code>jcli transaction</code>.</p>
+<p>There is a couple of commands that can be used to:</p>
+<ol>
+<li>prepare a transaction:
+<ul>
+<li><code>new</code> create a new empty transaction;</li>
+<li><code>add-input</code></li>
+<li><code>add-account</code></li>
+<li><code>add-output</code></li>
+</ul>
+</li>
+<li><code>finalize</code> the transaction for signing:</li>
+<li>create witnesses and add the witnesses:
+<ul>
+<li><code>make-witness</code></li>
+<li><code>add-witness</code></li>
+</ul>
+</li>
+<li><code>seal</code> the transaction, ready to send to the blockchain</li>
+</ol>
+<p>There are also functions to help decode and display the
+content information of a transaction:</p>
+<ul>
+<li><code>info</code></li>
+<li><code>id</code> to get the <strong>Transaction ID</strong> of the transaction</li>
+<li><code>to-message</code> to get the hexadecimal encoded message, ready to send with <code>cli rest message</code></li>
+</ul>
+<a class="header" href="#certificate" id="certificate"><h1>certificate</h1></a>
+<p>Tooling for offline transaction creation</p>
+<a class="header" href="#builder" id="builder"><h2>Builder</h2></a>
+<p>Builds a signed certificate.</p>
+<p>The process can be split into steps on the first step certificate
+is created.</p>
+<pre><code>jcli certificate new stake-pool-registration \
+  --vrf-key &lt;vrf-public-key&gt; --kes-key &lt;kes-public-key&gt; \
+  [--owner &lt;owner-public-key&gt;] \
+  --serial &lt;node-serial&gt; \
+  &lt;output-file&gt;
+</code></pre>
+<p>if output-file is omited result will be written to stdout. Once
+certificate is ready you must sign it with the private keys of
+all the owners:</p>
+<pre><code>jcli certificate sign &lt;key&gt; &lt;input-file&gt; &lt;output-file&gt;
+</code></pre>
+<a class="header" href="#rest" id="rest"><h1>REST</h1></a>
+<p>Jormungandr comes with a CLI client for manual communication with nodes over HTTP.</p>
+<a class="header" href="#conventions" id="conventions"><h2>Conventions</h2></a>
+<p>Many CLI commands have common arguments:</p>
+<ul>
+<li><code>-h &lt;addr&gt;</code> or <code>--host &lt;addr&gt;</code> - Node API address. Must always have <code>http://</code> or
+<code>https://</code> prefix. E.g. <code>-h http://127.0.0.1</code>, <code>--host https://node.com:8443/cardano/api</code></li>
+</ul>
+<a class="header" href="#node-stats" id="node-stats"><h2>Node stats</h2></a>
+<p>Fetches node stats</p>
+<pre><code>jcli rest v0 node stats get &lt;options&gt;
+</code></pre>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<p>YAML printed on success</p>
+<pre><code class="language-yaml">---
+blockRecvCnt: 7 # Blocks received by node
+txRecvCnt: 90   # Transactions received by node
+uptime: 2101    # Node uptitme in seconds
+</code></pre>
+<a class="header" href="#whole-utxo" id="whole-utxo"><h2>Whole UTXO</h2></a>
+<p>Fetches whole UTXO</p>
+<pre><code>jcli rest v0 utxo get &lt;options&gt;
+</code></pre>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<p>YAML printed on success</p>
+<pre><code class="language-yaml">---
+- in_idx: 0                                                                 # input index
+  in_txid: 50f21ac6bd3f57f231c4bf9c5fff7c45e2529c4dffed68f92410dbf7647541f1 # input transaction hash in hex
+  out_addr: ca1qvqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0jqxuzx4s  # output address in bech32
+  out_value: 999999999                                                      # output value
+</code></pre>
+<a class="header" href="#post-transaction" id="post-transaction"><h2>Post transaction</h2></a>
+<p>Posts a signed, hex-encoded transaction</p>
+<pre><code>jcli rest v0 message post &lt;options&gt;
+</code></pre>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+<li>-f --file &lt;file_path&gt; - File containing hex-encoded transaction.
+If not provided, transaction will be read from stdin.</li>
+</ul>
+<a class="header" href="#get-message-log" id="get-message-log"><h2>Get message log</h2></a>
+<p>Get the node's logs on the message pool. This will provide information on pending transaction,
+rejected transaction and or when a transaction has been added in a block</p>
+<pre><code>jcli rest v0 message logs &lt;options&gt;
+</code></pre>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<p>YAML printed on success</p>
+<pre><code class="language-yaml">---
+- fragment_id: 7db6f91f3c92c0aef7b3dd497e9ea275229d2ab4dba6a1b30ce6b32db9c9c3b2 # hex-encoded fragment ID
+  last_updated_at: 	2019-06-02T16:20:26.201000000Z                              # RFC3339 timestamp of last fragment status change
+  received_at: 2019-06-02T16:20:26.201000000Z                                   # RFC3339 timestamp of fragment receivement
+  received_from: Network,                                                       # how fragment was received
+  status: Pending,                                                              # fragment status
+</code></pre>
+<p><code>received_from</code> can be one of:</p>
+<pre><code class="language-yaml">received_from: Rest     # fragment was received from node's REST API
+</code></pre>
+<pre><code class="language-yaml">received_from: Network  # fragment was received from the network
+</code></pre>
+<p><code>status</code> can be one of:</p>
+<pre><code class="language-yaml">status: Pending                 # fragment is pending
+</code></pre>
+<pre><code class="language-yaml">status:
+  Rejected:                     # fragment was rejected
+    reason: reason of rejection # cause
+</code></pre>
+<pre><code class="language-yaml">status:                         # fragment was included in a block
+  InABlock: &quot;6637.3&quot;            # block epoch and slot ID formed as &lt;epoch&gt;.&lt;slot_id&gt;
+</code></pre>
+<a class="header" href="#blockchain-tip" id="blockchain-tip"><h2>Blockchain tip</h2></a>
+<p>Retrieves a hex-encoded ID of the blockchain tip</p>
+<pre><code>jcli rest v0 tip get &lt;options&gt;
+</code></pre>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<a class="header" href="#get-block" id="get-block"><h2>Get block</h2></a>
+<p>Retrieves a hex-encoded block with given ID</p>
+<pre><code>jcli rest v0 block &lt;block_id&gt; get &lt;options&gt;
+</code></pre>
+<p>&lt;block_id&gt; - hex-encoded block ID</p>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<a class="header" href="#get-next-block-id" id="get-next-block-id"><h2>Get next block ID</h2></a>
+<p>Retrieves a list of hex-encoded IDs of descendants of block with given ID.
+Every list element is in separate line. The IDs are sorted from closest to farthest.</p>
+<pre><code>jcli rest v0 block &lt;block_id&gt; next-id get &lt;options&gt;
+</code></pre>
+<p>&lt;block_id&gt; - hex-encoded block ID</p>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+<li>-c --count <count> - Maximum number of IDs, must be between 1 and 100, default 1</li>
+</ul>
+<a class="header" href="#get-account-state" id="get-account-state"><h2>Get account state</h2></a>
+<p>Get account state</p>
+<pre><code>jcli rest v0 account get &lt;account-id&gt; &lt;options&gt;
+</code></pre>
+<p>&lt;account-id&gt; - ID of an account, bech32-encoded</p>
+<p>The options are</p>
+<ul>
+<li>-h &lt;node_addr&gt; - see <a href="#conventions">conventions</a></li>
+</ul>
+<p>YAML printed on success</p>
+<pre><code class="language-yaml">---
+value: 257357,    # current balance of account in lovelace
+counter: 4,       # number of transactions performed using this account
+</code></pre>
+<a class="header" href="#advanced" id="advanced"><h1>Advanced</h1></a>
+<p>This section is meant for advanced users and developers of the rust node.
+It explains how to start a new blockchain with limit settings, making it
+easier to start integration with wallets or exchanges and experimenting
+or testing new features.</p>
+<a class="header" href="#genesis-file" id="genesis-file"><h1>genesis file</h1></a>
+<p>The genesis file is the file that allows you to create a new blockchain
+from block 0. It lays out the different parameter of your blockchain:
+the initial utxo, the start time, the slot duration time, etc...</p>
+<p>Example of a BFT genesis file with an initial address UTxO and an account UTxO.
+More info regarding <a href="advanced/./02_starting_bft_blockchain.html">starting a BFT blockchain here</a>
+and <a href="advanced/../jcli/address.html">regarding addresses there</a>.</p>
+<p>You can generate a documented pre-generated genesis file:</p>
+<pre><code>jcli genesis init
+</code></pre>
+<p>For example your genesis file may look like:</p>
+<pre><code class="language-yaml"># The Blockchain Configuration defines the settings of the blockchain.
+blockchain_configuration:
+
+  # The block0-date defines the date the blockchain starts
+  # expected value in seconds since UNIX_EPOCH
+  block0_date: {now}
+
+  # This is the type of discrimination of the blockchain
+  # of this blockchain is meant for production then
+  # use 'production' instead.
+  #
+  # otherwise leave as this
+  discrimination: test
+
+  # The initial consensus version:
+  #
+  # * BFT consensus: bft
+  # * Genesis Praos consensus: genesis
+  block0_consensus: bft
+
+  # Number of slots in each epoch
+  slots_per_epoch: 5
+
+  # The slot duration, in seconds, is the time between the creation
+  # of 2 blocks
+  slot_duration: 15
+
+  # The number of blocks (*10) per epoch
+  epoch_stability_depth: 10
+
+  # A list of Ed25519 Extended PublicKey that represents the
+  # BFT leaders encoded as bech32. The order in the list matters.
+  consensus_leader_ids:
+    - {leader_1}
+    - {leader_2}
+  # Genesis praos parameter D
+  bft_slots_ratio: 0.220
+
+  # Genesis praos active slot coefficient
+  # Determines minimum stake required to try becoming slot leader, must be in range (0,1]
+  consensus_genesis_praos_active_slot_coeff: 0.22
+
+  # This is the max number of messages allowed in a given Block
+  max_number_of_transactions_per_block: 255
+
+  # Allow the creation of accounts from the output of a transaction
+  #
+  # if set to false, account based wallet will not be created without
+  # publishing a stake certificate.
+  # if set to true, simply adding the account in the output of a transaction
+  # will allow the account to exist in the blockchain.
+  allow_account_creation: true
+
+  # The fee calculations settings
+  #
+  # fee(num_bytes, has_certificate) = constant + num_bytes * coefficient + has_certificate * certificate
+  linear_fee:
+    constant: 2
+    coefficient: 1
+    certificate: 4
+
+  # The speed to update the KES Key in seconds
+  kes_update_speed: 43200 # 12hours
+
+# The initial deposits present in the blockchain.
+#
+# It can be UTxO addresses or account (if allow_account_creation is set).
+initial_funds:
+  # this is the personal address of the developers, have a good heart and
+  # leave a good initial deposit for them
+  - address: {initial_funds_address}
+    value: 10000
+
+# The initial certificates.
+initial_certs:
+  - cert1qsqqqqqqqqqqqqqqqqqqqqqqqr2sr5860cvq6vuc05tlwl9lwrs5vw7wq8fjm9fw6mucy0cdd84n0c6ljv2p03s8tc8nukzcrx87zkp3hflm2ymglghs4sn60xgryu57pznzff92ldaymh34u36z6fvdqnzl8my8ucttn09sehq8pdgrle35k3spqpq2s44c5mudrr2c3d0pelf75tjk4ezmsqfxhvjlawxvmcnluc0tcl7kfh4hveatrfuu5fzg74hxpucf0sh6v4l7hhkpneaa02lmp6j8q5jqgzt4
+
+# the initial deposits present in the blockchain but utilising the
+# legacy cardano address format
+legacy_funds:
+  - address: 48mDfYyQn21iyEPzCfkATEHTwZBcZJqXhRJezmswfvc6Ne89u1axXsiazmgd7SwT8VbafbVnCvyXhBSMhSkPiCezMkqHC4dmxRahRC86SknFu6JF6hwSg8
+    value: 123
+
+</code></pre>
+<p>There are multiple <em>parts</em> in the genesis file:</p>
+<ul>
+<li><code>blockchain_configuration</code>: this is a list of configuration
+parameters of the blockchain, some of which can be changed later
+via the update protocol;</li>
+<li><code>initial_utxos</code>: the list of initial utxos (addresses and credited value);</li>
+<li><code>legacy_utxos</code>: the list of legacy cardano utxos (base58 encoded addresses
+and credited values).</li>
+</ul>
+<a class="header" href="#blockchain_configuration-options" id="blockchain_configuration-options"><h3><code>blockchain_configuration</code> options</h3></a>
+<table><thead><tr><th align="left"> option </th><th align="left"> format </th><th align="left"> description </th></tr></thead><tbody>
+<tr><td align="left"> <code>block0_date</code> </td><td align="left"> number </td><td align="left"> the official start time of the blockchain, in seconds since UNIX EPOCH </td></tr>
+<tr><td align="left"> <code>discrimination</code> </td><td align="left"> string </td><td align="left"> <code>production</code> or <code>test</code> </td></tr>
+<tr><td align="left"> <code>block0_consensus</code> </td><td align="left"> string </td><td align="left"> <code>bft</code> </td></tr>
+<tr><td align="left"> <code>slot_duration</code> </td><td align="left"> number </td><td align="left"> the number of seconds between the creation of 2 blocks </td></tr>
+<tr><td align="left"> <code>epoch_stability_depth</code> </td><td align="left"> number </td><td align="left"> allowed size of a fork (in number of block) </td></tr>
+<tr><td align="left"> <code>consensus_leader_ids</code> </td><td align="left"> array </td><td align="left"> the list of the BFT leader at the beginning of the blockchain </td></tr>
+<tr><td align="left"> <code>max_number_of_transactions_per_block</code> </td><td align="left"> number </td><td align="left"> the maximum number of transactions allowed in a block </td></tr>
+<tr><td align="left"> <code>bft_slots_ratio</code> </td><td align="left"> number </td><td align="left"> placeholder, do not use </td></tr>
+<tr><td align="left"> <code>allow_account_creation</code> </td><td align="left"> boolean </td><td align="left"> allow creating accounts without publishing certificate </td></tr>
+<tr><td align="left"> <code>linear_fee</code> </td><td align="left"> object </td><td align="left"> linear fee settings, set the fee for transaction and certificate publishing </td></tr>
+</tbody></table>
+<p><em>for more information about the BFT leaders in the genesis file, see
+<a href="advanced/./02_starting_bft_blockchain.html">Starting a BFT Blockchain</a></em></p>
+<a class="header" href="#the-initial-funds" id="the-initial-funds"><h3>The initial Funds</h3></a>
+<p>This is a list of the initial token present in the blockchain. It can be:</p>
+<ul>
+<li>classic UTxO: a <a href="advanced/../jcli/address.html#address-for-utxo">single address</a> and a value</li>
+<li>an account (if <code>allow_account_creation</code> is set to true): an
+<a href="advanced/../jcli/address.html#address-for-account">account address</a> and a value</li>
+</ul>
+<a class="header" href="#the-legacy-funds" id="the-legacy-funds"><h3>The legacy Funds</h3></a>
+<p>This is a list of legacy cardano addresses and associated credited value.</p>
+<p>Example:</p>
+<pre><code class="language-yaml">legacy_funds:
+  - address: Ae2tdPwUPEZCEhYAUVU7evPfQCJjyuwM6n81x6hSjU9TBMSy2YwZEVydssL
+    value: 2000
+</code></pre>
+<a class="header" href="#starting-a-bft-node" id="starting-a-bft-node"><h1>starting a bft node</h1></a>
+<p>BFT stands for the Byzantine Fault Tolerant
+(<a href="https://iohk.io/research/papers/#L5IHCV53">read the paper</a>).</p>
+<p>Jormungandr allows you to start a BFT blockchain fairly easily. The main
+downside is that it is centralized, only a handful of nodes will ever have
+the right to create blocks.</p>
+<a class="header" href="#how-does-it-work" id="how-does-it-work"><h2>How does it work</h2></a>
+<p>It is fairly simple. A given number of Nodes (<code>N</code>) will generate
+a key pairs of type <code>Ed25519Extended</code> (see
+<a href="advanced/./../jcli/key.html">JCLI's Keys</a>).</p>
+<p>They all share the public key and add them in the genesis.yaml file.
+It is the source of truth, the file that will generate the first block
+of the blockchain: the <strong>Block 0</strong>.</p>
+<p>Then, only by one after the other, each Node will be allowed to create a block.
+Utilising a Round Robin algorithm.</p>
+<a class="header" href="#example-of-genesis-file" id="example-of-genesis-file"><h2>Example of genesis file</h2></a>
+<pre><code class="language-yaml">blockchain_configuration:
+  block0_date: 1550822014
+  discrimination: test
+  block0_consensus: bft
+  slots_per_epoch: 5
+  slot_duration: 15
+  epoch_stability_depth: 10
+  consensus_genesis_praos_active_slot_coeff: 0.22
+  consensus_leader_ids:
+    - ed25519e_pk1k3wjgdcdcn23k6dwr0cyh88ad7a4ayenyxaherfazwy363pyy8wqppn7j3
+    - ed25519e_pk13talprd9grgaqzs42mkm0x2xek5wf9mdf0eefdy8a6dk5grka2gstrp3en
+  allow_account_creation: true
+  linear_fees:
+    constant: 0
+    coefficient: 0
+    certificate: 0
+  block_version: 1
+initial_funds:
+  - address: ta1svy0mwwm7mdwcuj308aapjw6ra4c3e6cygd0f333nvtjzxg8ahdvxlswdf0
+    value: 10000
+</code></pre>
+<p>In order to start your blockchain in BFT mode you need to be sure that:</p>
+<ul>
+<li><code>block_version</code> is set to <code>1</code>;</li>
+<li><code>consensus_leader_ids</code> is non empty;</li>
+</ul>
+<p>more information regarding the <a href="advanced/./01_the_genesis_block.html">genesis file here</a>.</p>
+<a class="header" href="#creating-the-block-0" id="creating-the-block-0"><h2>Creating the block 0</h2></a>
+<pre><code>jcli genesis encode --input genesis.yaml --output block-0.bin
+</code></pre>
+<p>This command will create (or replace) the <strong>Block 0</strong> of the blockchain
+from the given genesis configuration file (<code>genesis.yaml</code>).</p>
+<a class="header" href="#starting-the-node-1" id="starting-the-node-1"><h2>Starting the node</h2></a>
+<p>Now that the blockchain is initialized, you need to start your node.</p>
+<p>Write you private key in a file on your HD:</p>
+<pre><code>$ cat node_secret.yaml
+bft:
+  signing_key: ed25519e_sk1hpvne...
+</code></pre>
+<p>Configure your Node (config.yml) and run the following command:</p>
+<pre><code>$ jormungandr --genesis-block block-0.bin \
+    --config example.config \
+    --secret node_secret.yaml
+</code></pre>
+<p>It's possible to use the flag <code>--secret</code> multiple times to run a node
+with multiple leaders.</p>
+<a class="header" href="#step-by-step-to-start-the-bft-node" id="step-by-step-to-start-the-bft-node"><h2>Step by step to start the BFT node</h2></a>
+<ol>
+<li>Generate initial config <code>jcli genesis init &gt; genesis.yaml</code></li>
+<li>Generate secret key, e.g. <code>jcli key generate --type=Ed25519Extended &gt; key.prv</code></li>
+<li>Put secret key in a file, e.g. <code>node_secret.yaml</code> as follows:</li>
+</ol>
+<pre><code class="language-yaml">bft:
+ signing_key: ed25519e_sk1kppercsk06k03yk4qgea....
+</code></pre>
+<ol start="4">
+<li>Generate public key out of previously generated key <code>cat key.prv | jcli key to-public</code></li>
+<li>Put generated public key as in <code>genesis.yaml</code> under <code>consensus_leader_ids:</code></li>
+<li>Generate block = <code>jcli genesis encode --input genesis.yaml --output block-0.bin</code></li>
+<li>Create config file and store it on your HD as <code>node.config</code> e.g. -&gt;</li>
+</ol>
+<pre><code class="language-yaml">---
+logger:
+ verbosity: 4
+ format: json
+rest:
+ listen: &quot;127.0.0.1:8607&quot;
+ prefix: api
+peer_2_peer:
+ public_address: /ip4/127.0.0.1/tcp/8606
+ topics_of_interests:
+ messages: low
+ blocks: normal
+</code></pre>
+<ol start="8">
+<li>Start Jörmungandr node :</li>
+</ol>
+<pre><code>jormungandr --genesis-block block-0.bin --config node.config --secret node_secret.yaml
+</code></pre>
+<a class="header" href="#starting-a-genesis-blockchain" id="starting-a-genesis-blockchain"><h1>starting a genesis blockchain</h1></a>
+<p>When starting a genesis praos blockchain there is an element to take
+into consideration while constructing the block 0: <em>the stake distribution</em>.</p>
+<p>In the context of Genesis/Praos the network is fully decentralized and it is
+necessary to think ahead about initial stake pools and to make sure there
+is stake delegated to these stake pools.</p>
+<p>In your genesis yaml file, make sure to set the following values to the appropriate
+values/desired values:</p>
+<pre><code class="language-yaml"># The Blockchain Configuration defines the settings of the blockchain.
+blockchain_configuration:
+  block0_consensus: genesis
+  bft_slots_ratio: 0
+  consensus_genesis_praos_active_slot_coeff: 0.1
+  kes_update_speed: 43200 # 12hours
+</code></pre>
+<p><code>block0_consensus</code> set to <code>genesis</code> means you want to start a blockchain with
+genesis praos as the consensus layer.</p>
+<p><code>bft_slots_ratio</code> needs to be set to <code>0</code> (we don't support composite modes between
+BFT mode and Genesis mode -- yet).</p>
+<p><code>consensus_genesis_praos_active_slot_coeff</code> determines minimum stake required to
+try becoming slot leader, must be in range 0 exclusive and 1 inclusive.</p>
+<a class="header" href="#the-initial-certificates" id="the-initial-certificates"><h2>The initial certificates</h2></a>
+<p>In the <code>initial_certs</code> field you will set the initial certificate. This is important
+to declare the stake pool and delegate stake to them. Otherwise no block will be ever
+created.</p>
+<p>Remember that in this array the <strong>order</strong> matters:</p>
+<ol>
+<li>in order to create a stake pool, you need a stake key, so it needs to be registered
+first;</li>
+<li>in order to delegate your stake, you need a stake pool to already exists <strong>and</strong> you
+stake key declaration to be set</li>
+</ol>
+<a class="header" href="#the-stake-key-declaration" id="the-stake-key-declaration"><h3>The stake key declaration</h3></a>
+<p>To create a stake key registration certificate: simply follow the
+<a href="advanced/../stake_pool/registering_stake.html">registering stake key guide</a>.</p>
+<a class="header" href="#stake-pool-registration" id="stake-pool-registration"><h3>Stake pool registration</h3></a>
+<p>Now that you have a stake owner declared in the block0 you can register a stake pool.
+Follow the instruction in <a href="advanced/../stake_pool/registering_stake_pool.html">registering stake pool guide</a>.</p>
+<p>The <em>owner key</em> (the key you sign the stake pool registration certificate) is the secret
+key associated to a previously registered stake key.</p>
+<a class="header" href="#delegating-stake" id="delegating-stake"><h3>Delegating stake</h3></a>
+<p>Now that there is both your stake key registered and there are stake pools available
+in the block0 you need to delegate to one of the stake pool. Follow the instruction
+in <a href="advanced/../stake_pool/delegating_stake.html">delegating stake</a>.</p>
+<p>And in the initial funds start adding the addresses. To create an address with delegation
+follow the instruction in <a href="advanced/../jcli/address.html">JCLI's address guide</a>. Utilise the stake key
+registered previously as group address:</p>
+<pre><code>jcli address single $(wallet_key.pub) $(stake_key.pub)
+ta1sjx4j3jwel94g0cgwzq9au7h6m8f5q3qnyh0gfnryl3xan6qnmjse3k2uv062mzj34eacjnxthxqv8fvdcn6f4xhxwa7ms729ak3gsl4qrq2mm
+</code></pre>
+<p>You will notice that addresses with delegation are longer (about twice longer) than
+address without delegation.</p>
+<p>For example, the most minimal setting you may have is:</p>
+<pre><code class="language-yaml">initial_certs:
+  # register a stake key (K)
+  - cert1q8rv4ccl54k99rtnm39xvhwvqcwjcm385n2dwvamahpu5tmdz3pl2qgqgp6lh9x0mngzy5krzw6fgkhkcvkjj3e64qveny82fgzlyfqf62hsfdup8us3h4rayn66wlt97u6e4syu07grm9sghxy3zdjm0quu8eqrdfpysq
+
+  # register a stake pool (P), owner of the stake pool is the stake key (K)
+  - cert1qsqqqqqqqqqqqqqqqqqqq0p5avfqp9tzusr26chayeddkkmdlap6tl23ceca8unsghc22tap8clhrzslkehdycufa4ywvqvs4u36zctw4ydtg7xagprfgz0vuujh3lgtxgfszqzqj4xk4sxxyg392p5nqz8s7ev5wna7eqz7ycsuas05mrupmdsfk0fqqudanew6c0nckf5tsp0lgnk8e8j0dpnxvjk2usn52vs8umr3qrccegxaz
+
+  # delegate stake associated to stake key (K) to stake pool (P)
+  - cert1q0rv4ccl54k99rtnm39xvhwvqcwjcm385n2dwvamahpu5tmdz3plt65rpewev3a03xj7nfx5pz0xap2cjxjnxvt2ma9y9dalzder3xm5qyqyq0lx05ggrws0ghuffqrg7scqzdsd665v4m7087eam5zvw4f26v2tsea3ujrxly243sgqkn42uttk5juvq78ajvfx9ttcmj05lfuwtq9qhdxzr0
+
+initial_funds:
+  # address without delegation
+  - address: ta1swx4j3jwel94g0cgwzq9au7h6m8f5q3qnyh0gfnryl3xan6qnmjsczt057x
+    value: 10000
+  # address delegating to stake key (K)
+  - address: ta1sjx4j3jwel94g0cgwzq9au7h6m8f5q3qnyh0gfnryl3xan6qnmjse3k2uv062mzj34eacjnxthxqv8fvdcn6f4xhxwa7ms729ak3gsl4qrq2mm
+    value: 1000000
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
